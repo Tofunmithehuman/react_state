@@ -1,25 +1,64 @@
-import logo from './logo.svg';
+import React, { Component } from 'react';
 import './App.css';
+import Tofunmi from './Media/Tofunmi.JPG';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      // Define the initial state with a person's profile, show flag, and time tracking.
+      person: {
+        fullName: 'Bolaji Oluwatofunmi Ashraf',
+        bio: 'I shall float like a bee, and sting like a butterfly.',
+        imgSrc: Tofunmi,
+        profession: 'Full-stack Developer (MERN)',
+      },
+      shows: false, // Initially, the profile is hidden.
+      mountTime: new Date(),
+      elapsedTime: 0,
+    };
+  }
+
+  toggleProfile = () => {
+     // Toggle the 'shows' state when the button is clicked.
+    this.setState((prevState) => ({
+      shows: !prevState.shows,
+    }));
+  };
+
+  componentDidMount() {
+    this.interval = setInterval(() => {
+      const elapsedTime = Math.floor(
+        (new Date() - this.state.mountTime) / 1000
+      );
+      this.setState({ elapsedTime });
+    }, 1000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
+  render() {
+    const { person, shows, elapsedTime } = this.state;
+
+    return (
+      <div className="App">
+        <button onClick={this.toggleProfile}>
+          {shows ? 'Hide Profile' : 'Show Profile'}
+        </button>
+        {shows && (
+          <div>
+            <h1>{person.fullName}</h1>
+            <p>{person.bio}</p>
+            <img src={person.imgSrc} alt={person.fullName} />
+            <p>{person.profession}</p>
+          </div>
+        )}
+        <p>Time since mounting: {elapsedTime} seconds</p>
+      </div>
+    );
+  }
 }
 
 export default App;
